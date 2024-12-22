@@ -4,10 +4,17 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Artisan;
 
 // Route::get('/welcome', function () {
 //     return view('welcome');
 // })->middleware('guest');
+
+Route::get('/run-migration', function() {
+    Artisan::call('optimize:clear');
+    Artisan::call('migrate:refresh --seed');
+    return "Migrations executed successfully";
+});
 
 
 // All Products
