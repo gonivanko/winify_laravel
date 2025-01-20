@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Курсач Тест</title>
-    <link rel="icon" href="images/logo.png" type="image/png"/>
+    <link rel="icon" href="{{asset('images/logo.png')}}" type="image/png"/>
     <style>
         {!! Vite::content('resources/css/app.css') !!}
     </style>
     <script>
         {!! Vite::content('resources/js/app.js') !!}
     </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="flex-1 box-border flex flex-col justify-center text-defaultText">
     <header class="flex flex-col md:flex-row justify-around md:justify-between items-center px-12 py-6">

@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    // Show all products
     public function index(Request $request) {
         $filters = $request->all(); // Retrieve all GET parameters
 
@@ -27,27 +26,24 @@ class ProductController extends Controller
         ]);
     }
 
-    // Show single product
     public function show(Product $product) {
         return view('products.show', [
             'product' => $product
         ]);
     }
 
-    // Show create form
     public function create() {
         return view('products.create');
     }
 
-    // Store new product
     public function store(Request $request) {
         // dd($request->file('photo'));
         $formFields = $request->validate([
-            'title' => 'required',
+            'title' => ['required', 'max:255'],
             'description' => 'required',
             'min_bid' => ['required', 'integer'],
             'bid_step' => 'integer',
-            'location' => 'required',
+            'location' => ['required', 'max:255'],
             'condition' => ['required', Rule::enum(Condition::class)],
             'starting_datetime' => ['required', 'date', 'after_or_equal:now'],
             'ending_datetime' => ['required', 'date', 'after:starting_datetime'],
@@ -64,7 +60,6 @@ class ProductController extends Controller
         return redirect('/')->with('message', 'Product created successfully');
     }
 
-    // Show edit form
     public function edit(Product $product) {
 
         if ($product->seller_id != Auth::id() && !Auth::user()->is_admin) {
@@ -80,7 +75,6 @@ class ProductController extends Controller
         return view('products.edit', ['product' => $product]);
     }
 
-    // Update product
     public function update(Request $request, Product $product) {
 
         if ($product->seller_id != Auth::id() && !Auth::user()->is_admin) {
@@ -108,7 +102,6 @@ class ProductController extends Controller
         return back()->with('message', 'Product updated successfully');
     }
 
-    // Delete product
     public function delete(Product $product) {
 
         if ($product->seller_id != Auth::id() && !Auth::user()->is_admin) {

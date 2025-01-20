@@ -35,11 +35,6 @@ class Product extends Model
 
     public function scopeFilter($query, array $filters) 
     {
-        // if ($filters['search'] ?? false) {
-        //     $query->where('title', 'like', '%' . request('search') . '%')
-        //         ->orWhere('description', 'like', '%' . request('search') . '%')
-        //         ->orWhere('location', 'like', '%' . request('search') . '%');
-        // }
         if ($filters['search'] ?? false) {
             $query->where(function ($query) use ($filters) {
                 $query->where('title', 'like', '%' . $filters['search'] . '%')
@@ -48,11 +43,22 @@ class Product extends Model
             });
         }
         if ($filters['current_min_bid'] ?? false) {
-            $query->where('current_bid', '>=', request('current_min_bid'));
+            $query->where(function ($query) {
+                $query->where('current_bid', '>=', request('current_min_bid'))
+                ->orWhere(function ($query) {
+                    $query->whereNull('current_bid')->where('min_bid', '>=', request('current_min_bid'));
+                });
+            });
         }
         if ($filters['current_max_bid'] ?? false) {
-            $query->where('current_bid', '<=', request('current_max_bid'));
+            $query->where(function ($query) {
+                $query->where('current_bid', '<=', request('current_max_bid'))
+                ->orWhere(function ($query) {
+                    $query->whereNull('current_bid')->where('min_bid', '<=', request('current_max_bid'));
+                });
+            });
         }
+
         if ($filters['condition'] ?? false) {
             $query->where('condition', '=', request('condition'));
         }
@@ -100,6 +106,12 @@ class Product extends Model
 
             elseif ($mytime > $this->ending_datetime)
                 return "auction_ended";
+            else {
+                return "date_incorrect";
+            }
+        }
+        else {
+            return "date_incorrect";
         }
     }
 }

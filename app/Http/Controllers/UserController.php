@@ -9,14 +9,25 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    public function index() {
+        $users = User::latest()->paginate(3);
+        return view('users.index', ['users' => $users]);
+    }
+
+    public function show(User $user) {
+        return view('users.profile', [
+            'user' => $user
+        ]);
+    }
+
     public function register() {
         return view('users.register');
     }
 
     public function store(Request $request) {
         $formFields = $request->validate([
-            'name' => 'required',
-            'email' => ['required', 'email', Rule::unique('users', 'email')],
+            'name' => ['required', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'min:6']
         ]);
 
@@ -25,46 +36,6 @@ class UserController extends Controller
 
         Auth::login($user);
         return redirect('/')->with('message', 'User created and logged in successfully');
-    }
-
-    public function logout(Request $request) {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/')->with('message', 'You have been logged out');
-    }
-
-    public function login(Request $request) {
-        return view('users.login');
-    }
-
-    public function authenticate(Request $request) {
-        $formFields = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => 'required'
-        ]);
-
-        // $formFields['password'] = bcrypt($formFields['password']);
-        if (Auth::attempt($formFields)) {
-            $request->session()->regenerate();
-            return redirect('/')->with('message', 'You have been logged in successfully');
-        }
-        else {
-            return back()->withErrors([
-                'email' => 'Invalid credentials'
-            ]);
-        }
-
-        Auth::login($user);
-        
-    }
-
-    public function show(User $user) {
-        return view('users.profile', [
-            'user' => $user
-        ]);
     }
 
     public function edit(User $user) {
@@ -94,11 +65,6 @@ class UserController extends Controller
         return back()->with('message', 'User updated successfully');
     }
 
-    public function index() {
-        $users = User::latest()->paginate(3);
-        return view('users.index', ['users' => $users]);
-    }
-
     public function delete(User $user) {
 
         if ($user->id != Auth::id() && !Auth::user()->is_admin) {
@@ -113,6 +79,39 @@ class UserController extends Controller
         $user->delete();
         return back()->with('message', 'User deleted successfully');
     }
+
+    public function logout(Request $request) {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('message', 'You have been logged out');
+    }
+
+    public function login() {
+        return view('users.login');
+    }
+
+    public function authenticate(Request $request) {
+        $formFields = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => 'required'
+        ]);
+
+        // $formFields['password'] = bcrypt($formFields['password']);
+        if (Auth::attempt($formFields)) {
+            $request->session()->regenerate();
+            return redirect('/')->with('message', 'You have been logged in successfully');
+        }
+        else {
+            return back()->withErrors([
+                'email' => 'Invalid credentials'
+            ]);
+        }        
+    }
+
+    
 
     // public function products(User $user) {
     //     return view('products.manage', [

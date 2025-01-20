@@ -35,8 +35,8 @@ return new class extends Migration
             $table->string('location');
             $table->enum('condition', ['new', 'used']);
 
-            $table->dateTime('starting_datetime');
-            $table->dateTime('ending_datetime');
+            $table->timestamp('starting_datetime');
+            $table->timestamp('ending_datetime');
 
             $table->string('photo')->nullable();
 
