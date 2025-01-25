@@ -29,7 +29,6 @@ return new class extends Migration
             $table->integer('current_bid')->nullable();
 
             $table->boolean('is_paid')->default(0);
-            // $table->boolean('is_sent')->default(0);
             $table->boolean('is_received')->default(0);
             
             $table->string('location');
@@ -42,8 +41,6 @@ return new class extends Migration
 
             $table->timestamps();
         });
-
-        // DB::statement('UPDATE products SET current_bid = min_bid');
     }
 
     /**

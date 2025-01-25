@@ -19,7 +19,6 @@ class Product extends Model
         'bid_step',
         'current_bid',
         'is_paid',
-        // 'is_sent',
         'is_received',
         'location',
         'condition',

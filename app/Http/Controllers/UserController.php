@@ -110,13 +110,5 @@ class UserController extends Controller
             ]);
         }        
     }
-
-    
-
-    // public function products(User $user) {
-    //     return view('products.manage', [
-    //         'products' => $user->products()->get()
-    //     ]);
-    // }
 }
 
